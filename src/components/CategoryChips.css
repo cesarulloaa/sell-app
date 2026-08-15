@@ -1,0 +1,16 @@
+.categories-wrapper {
+  margin-bottom: 24px;
+}
+.categories-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none; /* Firefox */
+}
+.categories-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+.category-item {
+  flex-shrink: 0;
+}

@@ -1,0 +1,66 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--color-bg);
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  z-index: 50;
+  border-top: 1px solid var(--color-border);
+}
+
+/* On desktop view, we can hide the bottom nav since standard navigation handles it, or keep it as a mobile app feel */
+@media (min-width: 768px) {
+  .bottom-nav {
+    display: none;
+  }
+}
+
+.bottom-nav-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+  padding-bottom: env(safe-area-inset-bottom, 8px); /* Safe area for iOS */
+}
+
+.bottom-nav-item {
+  flex: 1;
+}
+
+.bottom-nav-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-text-light);
+  gap: 4px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s;
+}
+
+.bottom-nav-btn.active {
+  color: var(--color-primary);
+}
+
+.bottom-nav-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-nav-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.bottom-nav-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+}

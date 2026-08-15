@@ -1,0 +1,163 @@
+.dash-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 32px;
+}
+
+.dash-header-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--radius-full);
+  transition: background-color 0.2s;
+}
+.dash-header-btn:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.dash-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.dash-section-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.dash-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .dash-stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dash-actions-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 16px;
+}
+
+@media (max-width: 480px) {
+  .dash-actions-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Components specific styling matching existing design system */
+.dash-customer-view {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: linear-gradient(to right, var(--color-bg), var(--color-bg-secondary));
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.dash-customer-view:hover {
+  border-color: var(--color-primary);
+}
+
+.dash-stat-card {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-action-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+.dash-action-card--primary {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+.dash-action-card--primary:hover {
+  background-color: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.dash-action-card--secondary {
+  background-color: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+.dash-action-card--secondary:hover {
+  border-color: var(--color-text-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.dash-product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dash-product-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+}
+
+.dash-product-img {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background-color: var(--color-bg-secondary);
+}
+
+.dash-product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0; /* Enables truncation if needed */
+}
+
+.dash-product-price {
+  font-weight: 600;
+}
+
+.dash-product-badge {
+  display: inline-flex;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  width: max-content;
+}

@@ -1,0 +1,35 @@
+.cta-section {
+  margin-bottom: 40px;
+}
+.cta-content {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 40px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: none;
+}
+.cta-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.cta-subtitle {
+  font-size: 1rem;
+  opacity: 0.9;
+  margin-bottom: 24px;
+  max-width: 400px;
+}
+.cta-btn {
+  background-color: white;
+  color: var(--color-primary);
+  font-weight: 700;
+  padding: 12px 32px;
+  font-size: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+.cta-btn:hover {
+  background-color: var(--color-bg-secondary);
+}
