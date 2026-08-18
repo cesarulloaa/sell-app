@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   IconMenu, 
   IconPlus, 
@@ -7,11 +8,18 @@ import {
   IconTrendingUp, 
   IconPackage, 
   IconEdit, 
-  IconCopy 
+  IconCopy,
+  IconX,
+  IconSettings,
+  IconLogOut,
+  IconHome,
+  IconUser,
+  IconTruck
 } from '../../../../components/icons';
 import { MOCK_STATS, MOCK_PRODUCTS } from './Dashboard.data';
 import type { StatsCardProps, ActionCardProps, ProductListItemProps } from './Dashboard.types';
 import './Dashboard.css';
+import { useAuth } from '../../../../contexts/AuthContext';
 
 const StatsCard: React.FC<StatsCardProps> = ({ title, value, growth, icon: Icon }) => {
   const isPositive = growth >= 0;
@@ -74,20 +82,150 @@ const ProductListItem: React.FC<ProductListItemProps> = ({ product }) => {
 };
 
 export const Dashboard: React.FC = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { userData, logout } = useAuth();
+
   const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle Escape key
+  useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsSidebarOpen(false);
+        setIsUserMenuOpen(false);
+      }
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/auth/login');
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
+
+  const menuItems = [
+    { label: 'Dashboard', path: '/dashboard', icon: IconHome },
+    { label: 'Products', path: '/dashboard/products', icon: IconPackage },
+    { label: 'Orders', path: '/dashboard/orders', icon: IconTruck },
+    { label: 'Catalog', path: '/dashboard/catalog', icon: IconEye },
+    { label: 'Settings', path: '/dashboard/settings', icon: IconSettings },
+    { label: 'Profile', path: '/dashboard/profile', icon: IconUser },
+  ];
+
+  const getInitials = (name?: string) => {
+    if (!name) return 'U';
+    return name.substring(0, 2).toUpperCase();
+  };
 
   return (
     <>
+      <div 
+        className={`dash-overlay ${isSidebarOpen ? 'open' : ''}`} 
+        onClick={() => setIsSidebarOpen(false)}
+        aria-hidden="true"
+      />
+      
+      <aside className={`dash-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="dash-sidebar-header">
+          <div style={{ fontWeight: 700, fontSize: '1.25rem', color: 'var(--color-primary)' }}>
+            Vendor Center
+          </div>
+          <button className="dash-header-btn" onClick={() => setIsSidebarOpen(false)} aria-label="Close menu">
+            <IconX width={20} height={20} />
+          </button>
+        </div>
+        <nav className="dash-sidebar-nav">
+          {menuItems.map((item) => (
+            <button
+              key={item.label}
+              className={`dash-sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => {
+                navigate(item.path);
+                setIsSidebarOpen(false);
+              }}
+            >
+              <item.icon width={20} height={20} />
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      </aside>
+
       <header style={{ backgroundColor: 'var(--color-bg)', position: 'sticky', top: 0, zIndex: 40, borderBottom: '1px solid var(--color-border)' }}>
         <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
-          <button className="dash-header-btn" aria-label="Menu">
+          <button className="dash-header-btn" onClick={() => setIsSidebarOpen(true)} aria-label="Open menu">
             <IconMenu />
           </button>
           <div style={{ fontWeight: 700, fontSize: '1.125rem', color: 'var(--color-text)' }}>
             Vendor Dashboard
           </div>
-          <div className="dash-avatar">
-            JS
+          
+          <div className="dash-avatar-wrapper" ref={userMenuRef}>
+            <div 
+              className="dash-avatar" 
+              onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+              tabIndex={0}
+              role="button"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                   setIsUserMenuOpen(!isUserMenuOpen);
+                   e.preventDefault();
+                }
+              }}
+              aria-label="User menu"
+              aria-expanded={isUserMenuOpen}
+            >
+              {getInitials(userData?.businessName)}
+            </div>
+            
+            <div className={`dash-dropdown ${isUserMenuOpen ? 'open' : ''}`}>
+              <div style={{ padding: '8px 16px', marginBottom: '4px' }}>
+                <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{userData?.businessName || 'Vendor User'}</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-text-light)', wordBreak: 'break-all' }}>{userData?.email}</div>
+              </div>
+              <div className="dash-dropdown-divider" />
+              <button 
+                className="dash-dropdown-item" 
+                onClick={() => { setIsUserMenuOpen(false); navigate('/dashboard/profile'); }}
+              >
+                <IconUser width={16} height={16} /> Profile
+              </button>
+              <button 
+                className="dash-dropdown-item" 
+                onClick={() => { setIsUserMenuOpen(false); navigate('/dashboard/settings'); }}
+              >
+                <IconSettings width={16} height={16} /> Settings
+              </button>
+              <div className="dash-dropdown-divider" />
+              <button 
+                className="dash-dropdown-item" 
+                onClick={handleLogout}
+                style={{ color: '#ef4444' }}
+              >
+                <IconLogOut width={16} height={16} /> Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 import '../../../components/login.css';
 
 
@@ -31,24 +33,36 @@ export const Login: React.FC = () => {
   const [emailError, setEmailError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Hook de autenticación
+  const { login, error: authError } = useAuth();
+  const navigate = useNavigate();
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic visual validation
     if (!email.includes('@')) {
       setEmailError(true);
       return;
     }
+
     setEmailError(false);
     setIsSubmitting(true);
 
-    // Log intent to connect logic later
-    console.log('Login attempt:', { email, password });
+    try {
+      // Llamar a Firebase login
+      await login(email, password);
 
-    // Fake load to demonstrate state
-    setTimeout(() => {
+      // Si el login es exitoso, redirigir
+      navigate('/dashboard');
+
+      console.log('✓ Login exitoso!');
+    } catch (err) {
+      console.error('Error en login:', err);
+      // El error ya está en authError
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -68,6 +82,13 @@ export const Login: React.FC = () => {
           <h1 className="login-title">Welcome Back</h1>
           <p className="login-subtitle">Sign in to continue exploring fresh products</p>
         </div>
+
+        {/* Mostrar error de Firebase si existe */}
+        {authError && (
+          <div className="error-banner">
+            {authError}
+          </div>
+        )}
 
         <form className="login-form" onSubmit={handleSubmit} noValidate>
 

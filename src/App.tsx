@@ -1,4 +1,7 @@
 
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AuthProvider } from './contexts/AuthContext';
+import Dashboard from './features/admin/components/pages/Dashboard';
 import Login from './features/auth/pages/login';
 import Signup from './features/auth/pages/signup';
 import { StartPage } from './features/landing/pages/StartPage';
@@ -11,15 +14,24 @@ function App() {
     // <StartPage />
     // <Dashboard />
     // <Home />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<StartPage />} />
+          <Route path="/auth/register" element={<Signup />} />
+          <Route path="/auth/login" element={<Login />} />
 
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<StartPage />} />
-        <Route path="/auth/register" element={<Signup />} />
-        <Route path="/auth/login" element={<Login />} />
-        
-      </Routes>
-    </BrowserRouter>
+          <Route path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>}
+          />
+
+
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
 
   )
 }
